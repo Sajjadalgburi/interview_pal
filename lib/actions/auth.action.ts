@@ -5,11 +5,16 @@ import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
+type serverMessage = {
+  success: boolean;
+  message: string;
+};
 
 /**
- * Method to sign up a new user. Logic mostly saves the user into the database if they do not exist.
+ * Method to sign up a new user. Logic mostly saves the user
+ * into the database if they do not exist.
  */
-export const signUp = async (params: SignUpParams) => {
+export const signUp = async (params: SignUpParams): Promise<serverMessage> => {
   const { uid, name, email } = params;
 
   try {
@@ -48,10 +53,43 @@ export const signUp = async (params: SignUpParams) => {
 };
 
 /**
- * This method will essentially create a session cookie for the user. This is used to authenticate the user in the backend.
+ * Method which will sign a user in if they exist in the database.
+ * This method will also create a session cookie for the user.
+ * @param params
+ * @returns
+ */
+export const signIn = async (
+  params: SignInParams,
+): Promise<serverMessage | undefined> => {
+  const { idToken, email } = params;
+
+  try {
+    const user = await auth.getUserByEmail(email);
+
+    if (!user) {
+      return {
+        success: false,
+        message: "User does not exist. Create an account instead.",
+      };
+    }
+
+    await setSessionCookie(idToken);
+  } catch (e) {
+    console.log(e);
+
+    return {
+      success: false,
+      message: "Failed to login...",
+    };
+  }
+};
+
+/**
+ * This method will essentially create a session cookie for the user.
+ * This is used to authenticate the user in the backend.
  * @param idToken
  */
-export const setSessionCookie = async (idToken: string) => {
+export const setSessionCookie = async (idToken: string): Promise<void> => {
   const cookieStore = await cookies();
 
   const sessionCookie = await auth.createSessionCookie(idToken, {
