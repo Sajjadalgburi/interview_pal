@@ -4,19 +4,24 @@ import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { toast } from "sonner";
+
+// AUTH STUFF
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "@/firebase/client";
+import { signIn, signUp } from "@/lib/actions/auth.action";
 
 // Form stuff and schema
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import Link from "next/link";
-import { toast } from "sonner";
 import FormField from "./FormField";
-import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/firebase/client";
-import { signUp } from "@/lib/actions/auth.action";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -68,10 +73,27 @@ const AuthForm = ({ type }: { type: FormType }) => {
         router.push("/sign-in");
       } else {
         // Means user is signing in /logging
+        const { email, password } = values;
+        const userCredentials = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+
+        const idToken: string = await userCredentials.user.getIdToken();
+
+        if (!idToken) {
+          toast.error("Failed to sign in");
+          return;
+        }
+
+        await signIn({
+          email,
+          idToken,
+        });
+
         toast.success("Signed In successfully!");
         router.push("/");
-
-        console.log("sign in", values);
       }
     } catch (error) {
       console.log("error", error);
