@@ -168,7 +168,7 @@
   }
 
   .btn-disconnect {
-    @apply bg-destructive-100 active:bg-destructive-200 hover:bg-destructive-200 inline-block min-w-28 rounded-full border border-transparent px-7 py-3 text-sm leading-5 font-bold text-white shadow-sm transition-colors duration-150 focus:shadow-2xl focus:outline-none;
+    @apply bg-destructive-100 active:bg-destructive-200 hover:bg-destructive-200 inline-block min-w-28 cursor-pointer rounded-full border border-transparent px-7 py-3 text-sm leading-5 font-bold text-white shadow-sm transition-colors duration-150 focus:shadow-2xl focus:outline-none;
   }
 
   .btn-upload {
