@@ -1,9 +1,9 @@
 import { formatDate, normalizeType } from "@/helpers";
-import { getRandomInterviewCover } from "@/utils";
-import dayjs from "dayjs";
+import { getRandomInterviewCover } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import DisplayTechIcons from "./DisplayTechIcons";
 
 const InterviewCard = ({
   interviewId,
@@ -61,7 +61,7 @@ const InterviewCard = ({
         </div>
 
         <div className="flex flex-row justify-between">
-          <p>Tech Icons</p>
+          <DisplayTechIcons techStack={techstack} />
 
           <Button className="btn-primary">
             <Link
