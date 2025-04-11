@@ -18,7 +18,7 @@ interface SavedMessage {
   content: string;
 }
 
-const Agent = ({ userName, userId, type }: AgentProps) => {
+const Agent = ({ userName, userId }: AgentProps) => {
   const router = useRouter();
 
   // Application state
@@ -28,7 +28,7 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   );
   const [messages, setMessages] = useState<SavedMessage[]>([]);
 
-  const lastMessage = messages[messages.length - 1];
+  const latestMessage = messages[messages.length - 1]?.content;
 
   useEffect(() => {
     const onCallStart = () => setCallStatus(CallStatusEnum.ACTIVE);
@@ -67,6 +67,32 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (callStatus === CallStatusEnum.FINISHED) router.push("/");
+
+    return () => {};
+  }, [messages, callStatus, userId, router]);
+
+  const handleCall = async (): Promise<void> => {
+    setCallStatus(CallStatusEnum.CONNECTING);
+
+    await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+      variableValues: {
+        userid: userId,
+        username: userName,
+      },
+    });
+  };
+  const handleDisconnect = async (): Promise<void> => {
+    setCallStatus(CallStatusEnum.FINISHED);
+
+    vapi.stop();
+  };
+
+  const isCallInactiveOrFinished: boolean =
+    callStatus === CallStatusEnum.INACTIVE ||
+    callStatus === CallStatusEnum.FINISHED;
+
   return (
     <>
       <div className="call-view">
@@ -102,20 +128,22 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
         <div className="transcript-border">
           <div className="transcript">
             <p
-              key={lastMessage}
               className={cn(
                 "opacity-0 transition-opacity duration-500",
                 "animate-fadeIn opacity-100",
               )}
             >
-              {lastMessage}
+              {latestMessage}
             </p>
           </div>
         </div>
       )}
-      {/* <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center">
         {callStatus !== "ACTIVE" ? (
-          <button className="btn-call relative">
+          <button
+            className="btn-call relative"
+            onClick={async () => handleCall()}
+          >
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -124,15 +152,18 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
             />
 
             <span className="relative">
-              {callStatus === "INACTIVE" || callStatus === "FINISHED"
-                ? "Call"
-                : ". . ."}
+              {isCallInactiveOrFinished ? "Call" : ". . ."}
             </span>
           </button>
         ) : (
-          <button className="btn-disconnect">End</button>
+          <button
+            onClick={async () => handleDisconnect()}
+            className="btn-disconnect"
+          >
+            End
+          </button>
         )}
-      </div> */}
+      </div>
     </>
   );
 };
