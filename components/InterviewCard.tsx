@@ -7,6 +7,7 @@ import DisplayTechIcons from "./DisplayTechIcons";
 
 const InterviewCard = ({
   interviewId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   userId,
   role,
   type,

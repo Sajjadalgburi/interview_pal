@@ -11,6 +11,7 @@ enum CallStatusEnum {
 
 const Agent = ({ userName }: AgentProps) => {
   const isSpeaking: boolean = true;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const callStatus = CallStatusEnum.FINISHED;
   const messages = ["awdawd", "adawdwad", "awdwad", "last"];
 
@@ -62,7 +63,7 @@ const Agent = ({ userName }: AgentProps) => {
           </div>
         </div>
       )}
-      <div className="flex w-full justify-center">
+      {/* <div className="flex w-full justify-center">
         {callStatus !== "ACTIVE" ? (
           <button className="btn-call relative">
             <span
@@ -81,7 +82,7 @@ const Agent = ({ userName }: AgentProps) => {
         ) : (
           <button className="btn-disconnect">End</button>
         )}
-      </div>
+      </div> */}
     </>
   );
 };
