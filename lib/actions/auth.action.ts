@@ -132,3 +132,9 @@ export const getCurrentUser = async (): Promise<User | null> => {
     return null;
   }
 };
+
+export const isAuthenticated = async (): Promise<boolean> => {
+  const user = await getCurrentUser();
+
+  return !!user;
+};
