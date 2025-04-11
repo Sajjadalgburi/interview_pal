@@ -1,6 +1,10 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { vapi } from "@/lib/vapi.sdk";
 
 enum CallStatusEnum {
   INACTIVE = "INACTIVE",
@@ -9,13 +13,59 @@ enum CallStatusEnum {
   FINISHED = "FINISHED",
 }
 
-const Agent = ({ userName }: AgentProps) => {
-  const isSpeaking: boolean = true;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const callStatus = CallStatusEnum.FINISHED;
-  const messages = ["awdawd", "adawdwad", "awdwad", "last"];
+interface SavedMessage {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
+
+const Agent = ({ userName, userId, type }: AgentProps) => {
+  const router = useRouter();
+
+  // Application state
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+  const [callStatus, setCallStatus] = useState<CallStatusEnum>(
+    CallStatusEnum.INACTIVE,
+  );
+  const [messages, setMessages] = useState<SavedMessage[]>([]);
 
   const lastMessage = messages[messages.length - 1];
+
+  useEffect(() => {
+    const onCallStart = () => setCallStatus(CallStatusEnum.ACTIVE);
+    const onCallEnd = () => setCallStatus(CallStatusEnum.FINISHED);
+
+    const onMessage = (message: Message) => {
+      if (message.type === "transcript" && message.transcriptType === "final") {
+        const newMessage = { role: message.role, content: message.transcript };
+
+        // Update the state with the new message
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+    };
+
+    const onSpeakStart = () => setIsSpeaking(true);
+    const onSpeakEnd = () => setIsSpeaking(false);
+
+    const onError = (error: Error) => {
+      console.log("Error:", error.message);
+    };
+
+    vapi.on("call-start", onCallStart);
+    vapi.on("call-end", onCallEnd);
+    vapi.on("message", onMessage);
+    vapi.on("speech-start", onSpeakStart);
+    vapi.on("speech-end", onSpeakEnd);
+    vapi.on("error", onError);
+
+    return () => {
+      vapi.off("call-start", onCallStart);
+      vapi.off("call-end", onCallEnd);
+      vapi.off("message", onMessage);
+      vapi.off("speech-start", onSpeakStart);
+      vapi.off("speech-end", onSpeakEnd);
+      vapi.off("error", onError);
+    };
+  }, []);
 
   return (
     <>
