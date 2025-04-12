@@ -4,8 +4,9 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-const InterviewCard = ({
+const InterviewCard = async ({
   id,
   userId,
   role,
@@ -13,7 +14,13 @@ const InterviewCard = ({
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback = null as Feedback | null;
+  const feedback =
+    userId && id
+      ? await getFeedbackByInterviewId({
+          userId: userId,
+          interviewId: id,
+        })
+      : null;
   const normalizedType = normalizeType(type);
   const formattedDate = formatDate(
     feedback?.createdAt || createdAt || new Date(),
@@ -67,7 +74,7 @@ const InterviewCard = ({
             <Link
               href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
-              {feedback ? "View Feedback" : "Take Interview"}
+              {feedback ? "Check Feedback" : "Take Interview"}
             </Link>
           </Button>
         </div>
