@@ -1,18 +1,12 @@
-import Image from "next/image";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
 import React from "react";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="root-layout">
-      <nav>
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="logo" width={38} height={32} />
-          <h2 className="texct-primary-100">Interview Pal</h2>
-        </Link>
-      </nav>
-      {children}
-    </div>
+    <>
+      <Navbar />
+      <div className="root-layout">{children}</div>{" "}
+    </>
   );
 };
 
