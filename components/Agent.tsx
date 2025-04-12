@@ -140,10 +140,7 @@ const Agent = ({ userName, userId }: AgentProps) => {
       )}
       <div className="flex w-full justify-center">
         {callStatus !== "ACTIVE" ? (
-          <button
-            className="btn-call relative"
-            onClick={async () => handleCall()}
-          >
+          <button className="btn-call relative" onClick={handleCall}>
             <span
               className={cn(
                 "absolute animate-ping rounded-full opacity-75",
@@ -156,10 +153,7 @@ const Agent = ({ userName, userId }: AgentProps) => {
             </span>
           </button>
         ) : (
-          <button
-            onClick={async () => handleDisconnect()}
-            className="btn-disconnect"
-          >
+          <button onClick={handleDisconnect} className="btn-disconnect">
             End
           </button>
         )}
