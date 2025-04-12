@@ -24,7 +24,7 @@ const Page = async () => {
 
   return (
     <>
-      <section className="card-cta">
+      <section className="card-cta mt-12">
         <div className="flex max-w-lg flex-col gap-6">
           <h2>Be Interview-Ready with AI-Powered Mock Interviews</h2>
           <p>
