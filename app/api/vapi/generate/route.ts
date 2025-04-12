@@ -25,14 +25,15 @@ export async function POST(req: NextRequest) {
     });
 
     const interview = {
-      role,
-      type,
-      level,
-      techstack: techstack.split(","), // stores an array
-      questions: JSON.parse(questions), // parsing the questions string to JSON to be saved into firebase
-      coverImage: getRandomInterviewCover(), // todo : we can let the user pass the cover image as well
-      createdAt: new Date().toISOString(), // firebase requires a string
+      role: role,
+      type: type,
+      level: level,
+      techstack: techstack.split(","),
+      questions: JSON.parse(questions),
       userId: userid,
+      finalized: true,
+      coverImage: getRandomInterviewCover(),
+      createdAt: new Date().toISOString(),
     };
 
     await db.collection("interviews").add(interview);
