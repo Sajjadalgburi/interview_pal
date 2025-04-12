@@ -3,6 +3,7 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
 type serverMessage = {
@@ -137,4 +138,20 @@ export const isAuthenticated = async (): Promise<boolean> => {
   const user = await getCurrentUser();
 
   return !!user;
+};
+
+export const logout = async (): Promise<void> => {
+  try {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get("session");
+
+    if (!sessionCookie) return;
+
+    cookieStore.delete("session");
+
+    redirect("/sign-in");
+  } catch (error) {
+    console.log("Error logging out", error);
+    return;
+  }
 };
