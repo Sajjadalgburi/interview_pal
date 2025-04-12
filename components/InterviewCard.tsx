@@ -6,8 +6,7 @@ import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
 
 const InterviewCard = ({
-  interviewId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  id,
   userId,
   role,
   type,
@@ -66,11 +65,7 @@ const InterviewCard = ({
 
           <Button className="btn-primary">
             <Link
-              href={
-                feedback
-                  ? `/interview/${interviewId}/feedback`
-                  : `/interview/${interviewId}`
-              }
+              href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
               {feedback ? "View Feedback" : "Take Interview"}
             </Link>
