@@ -106,3 +106,25 @@ export async function createFeedback(params: CreateFeedbackParams) {
     };
   }
 }
+
+export async function getFeedbackByInterviewId(
+  params: GetFeedbackByInterviewIdParams,
+): Promise<Feedback | null> {
+  const { interviewId, userId } = params;
+
+  const feedback = await db
+    .collection("feedback")
+    .where("interviewId", "==", interviewId)
+    .where("userId", "==", userId)
+    .limit(1)
+    .get();
+
+  if (feedback.empty) return null;
+
+  const feedbackDocs = feedback.docs[0];
+
+  return {
+    id: feedbackDocs.id,
+    ...feedbackDocs.data(),
+  } as Feedback;
+}
