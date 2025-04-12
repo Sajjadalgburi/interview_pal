@@ -138,3 +138,25 @@ export const isAuthenticated = async (): Promise<boolean> => {
 
   return !!user;
 };
+
+export const getInterviewByUserId = async (
+  userId: string,
+): Promise<Interview[] | null> => {
+  try {
+    const interviews = await db
+      .collection("interviews")
+      .where("userId", "==", userId)
+      .get();
+
+    return interviews.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        }) as Interview,
+    );
+  } catch (error) {
+    console.log("Error getting interviews", error);
+    return null;
+  }
+};
