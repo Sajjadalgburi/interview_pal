@@ -14,8 +14,6 @@ const Page = async ({ params }: RouteParams) => {
 
   if (!interview || !user) redirect("/");
 
-  console.log(interview);
-
   return (
     <>
       <div className="flex flex-row justify-between gap-5">

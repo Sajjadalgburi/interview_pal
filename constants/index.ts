@@ -113,7 +113,7 @@ export const interviewer: CreateAssistantDTO = {
     similarityBoost: 0.8,
     speed: 0.9,
     style: 0.5,
-    useSpeakerBoost: true,
+    useSpeakerBoost: false,
   },
   model: {
     provider: "openai",
