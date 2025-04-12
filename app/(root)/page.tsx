@@ -4,12 +4,19 @@ import { dummyInterviews } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { isAuthenticated } from "@/lib/actions/auth.action";
+import {
+  getCurrentUser,
+  getInterviewByUserId,
+} from "@/lib/actions/auth.action";
 import { redirect } from "next/navigation";
 
 const Page = async () => {
-  const user = await isAuthenticated();
+  const user = await getCurrentUser();
   if (!user) redirect("/sign-in");
+
+  const userInterviews = await getInterviewByUserId(user.id);
+
+  const hasPastInterviews: boolean = userInterviews?.length > 0;
 
   return (
     <>
@@ -37,9 +44,15 @@ const Page = async () => {
         <h2>Your Interviews</h2>
         <div className="interviews-section">
           {/* <p>You have not taken any interviews yet!</p> */}
-          {dummyInterviews.map((interview) => (
-            <InterviewCard key={interview.id} {...interview} />
-          ))}
+          {hasPastInterviews ? (
+            userInterviews?.map((interview) => (
+              <InterviewCard key={interview.id} {...interview} />
+            ))
+          ) : (
+            <p className="md:text-md text-sm">
+              You have not taken any interviews yet!
+            </p>
+          )}
         </div>
       </section>
 
