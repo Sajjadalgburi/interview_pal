@@ -40,7 +40,7 @@ const Page = async () => {
           alt="robot-image"
           width={400}
           height={400}
-          className="max-sm:hidden"
+          className="object-cover max-md:hidden"
         />{" "}
       </section>
 
