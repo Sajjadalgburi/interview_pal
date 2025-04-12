@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
+import { createFeedback } from "@/lib/actions/general.action";
 
 enum CallStatusEnum {
   INACTIVE = "INACTIVE",
@@ -78,12 +79,13 @@ const Agent = ({
     console.log("Generating feedback...");
 
     // todo: implement feedback generation logic
-    const { success, id } = {
-      success: true,
-      id: "some id here 123",
-    };
+    const { success, feedbackId } = await createFeedback({
+      interviewId: interviewId!,
+      userId: userId!,
+      transcript: messages,
+    });
 
-    if (success && id) {
+    if (success && feedbackId) {
       router.push(`/interview/${interviewId}/feedback`);
     } else {
       console.error("Failed to generate feedback");
